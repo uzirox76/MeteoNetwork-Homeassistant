@@ -1,5 +1,5 @@
-# MeteoNetwork-Homeassistant
-package per i dati di MeteoNetwork in Home Assistant.
+# MeteoNetwork per Home Assistant
+package per i dati delle stazioni meteo di MeteoNetwork in Home Assistant come sensori.
 
 per avere i vari sensori esposti, bisogna editare il file inserendo il codice della stazione che si intende monitorare.
 Se si vuole avere una media della zona, si può togliere il commento alla linea sopra e mettere le coordinate.
