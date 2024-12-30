@@ -1,0 +1,66 @@
+homeassistant:
+
+  customize:
+    sensor.meteonetwork:
+      friendly_name: Meteonetwork
+      icon: mdi:cloud-braces   
+
+sensor:
+  - platform: rest
+    name: meteonetwork
+    json_attributes:
+      - lat
+      - lon
+      - temperature
+      - rh
+      - dew_point
+      - daily_rain
+      - smlp
+      - wind_direction
+      - wind_direction_cardinal
+      - wind_speed
+      - distance
+    # resource: https://api.meteonetwork.it/v3/interpolated-realtime?lat=XX.XX&lon=YY.YY
+    resource: https://api.meteonetwork.it/v3/data-realtime/CODICESTAZIONE
+    value_template: "{{ value_json.area }}"
+    verify_ssl: false    
+    scan_interval: 600
+    headers:
+      Authorization: !secret meteonetwork_token
+
+  - platform: template
+    sensors:
+      meteonetwork_temp:
+        friendly_name: "Temperatura"
+        value_template: "{{ state_attr('sensor.meteonetwork', 'temperature') | default(0.0) | float | round(1) }}"
+        unit_of_measurement: "°C"
+      meteonetwork_rh:
+        friendly_name: "Umidità relativa"
+        value_template: "{{ state_attr('sensor.meteonetwork', 'rh') | default(0) | int }}"
+        unit_of_measurement: "%"
+        icon_template: mdi:water-percent
+      meteonetwork_press:
+        friendly_name: "Pressione"
+        value_template: "{{ state_attr('sensor.meteonetwork', 'smlp') | default(0) | int }}"
+        unit_of_measurement: "hPa"
+        icon_template: mdi:gauge
+      meteonetwork_wind_speed:
+        friendly_name: "Velocità del vento"
+        value_template: "{{ state_attr('sensor.meteonetwork', 'wind_speed') | default(0) | int }}"
+        unit_of_measurement: "Km/h"
+        icon_template: mdi:weather-windy
+      meteonetwork_wind_direction:
+        friendly_name: "Direzione del vento"
+        value_template: "{{ state_attr('sensor.meteonetwork', 'wind_direction') | default('N/A') }}"
+        icon_template: mdi:compass-outline
+      meteonetwork_rain:
+        friendly_name: "Pioggia"
+        value_template: "{{ state_attr('sensor.meteonetwork', 'daily_rain') | float(default=0) | round(1) }}"
+        unit_of_measurement: "mm/h"
+        icon_template: mdi:weather-pouring
+      meteonetwork_dew_point:
+        friendly_name: "Temperatura rugiada"
+        value_template: "{{ state_attr('sensor.meteonetwork', 'dew_point') | default(0.0) | float | round(1) }}"
+        unit_of_measurement: "°C"
+        icon_template: mdi:water
+         
